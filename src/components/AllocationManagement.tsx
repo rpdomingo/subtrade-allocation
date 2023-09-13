@@ -22,12 +22,13 @@ export default function () {
     const computeCascadingRemainders = (currentChildren: Child[], parentQty: number): Child[] => {
         let remainingQty = parentQty;
     
-        return currentChildren.map(child => {
+        return currentChildren.map((child,index) => {
             const newRemainder = remainingQty - child.Allocation;
             remainingQty = newRemainder;
             
             return {
                 ...child,
+                SNo: index + 1,  // Recompute SNo based on new index
                 Remainder: newRemainder
             };
         });
@@ -48,9 +49,12 @@ export default function () {
             return;
         }
 
+        const newChildSNo = children.length > 0 ? children[children.length - 1].SNo + 1 : 1;
+
         const newChild: Child = { 
             ChildID: Date.now(),
-            Allocation: newChildAllocation ,
+            SNo: newChildSNo,
+            Allocation: newChildAllocation,
             Remainder: 0
         };
 
@@ -68,6 +72,7 @@ export default function () {
         setChildren(updatedChildrenWithRemainder);
     };
 
+    // Updating the child data
     const updateChild = (childID: number): void => {
         const updatedChildren = children.map(child => 
             child.ChildID === childID 
@@ -118,6 +123,7 @@ export default function () {
             <h3>Children Allocations</h3>
             {children.map((child, index) => (
                 <div key={child.ChildID}>
+                    SNo: {child.SNo} | 
                     Allocation for Child {child.ChildID}: {child.Allocation}
                     <span> | Remainder: {child.Remainder}</span>
                     
